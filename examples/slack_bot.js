@@ -132,6 +132,31 @@ controller.hears(['ドミネイトベット'], 'direct_message,direct_mention,me
     bot.reply(message, 'ナッツあるいはドミネイトハンドを持っているときに、アンダードッグにコールさせるためのベット。もっとも基本的なベットだが、ナッツあるいはドミネイト判断が難しいため、案外純粋なバリューベットが打てる機会は少ない。');
 });
 
+controller.hears(['今日は(.*)勝った'], ['ambient', 'direct_mention'], (bot, message) => {
+    // bot.reply(message, 'すごいにゃ！！！きっと明日も勝てるはずにゃ！！');
+
+    bot.api.reactions.add({
+        timestamp: message.ts,
+        channel: message.channel,
+        name: 'two_hearts'
+    }, (err, res) => {
+        var money = message.match[1];
+        bot.reply(message, money + 'も勝つなんてすごいにゃ！明日も勝てると良いにゃ〜:heart_eyes_cat:');
+    });
+});
+
+controller.hears(['今日は(.*)負けた'], ['ambient', 'direct_mention'], (bot, message) => {
+    // bot.reply(message, 'すごいにゃ！！！きっと明日も勝てるはずにゃ！！');
+
+    bot.api.reactions.add({
+        timestamp: message.ts,
+        channel: message.channel,
+        name: 'scream'
+    }, (err, res) => {
+        var money = message.match[1];
+        bot.reply(message, 'そんな日もあるにゃ。明日はきっと良い日になるにゃ:joy_cat:');
+    });
+});
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function (bot, message) {
 
