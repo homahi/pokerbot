@@ -195,6 +195,97 @@ controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_men
     });
 });
 
+controller.hears(['このハンドどう思う？(.*)'], 'direct_message,direct_mention', function (bot, message) {
+    let rank = [
+        [1, 1, 2, 2, 3, 5, 5, 5, 5, 5, 5, 5, 5],
+        [2, 1, 2, 3, 4, 7, 7, 7, 7, 7, 7, 7, 7],
+        [3, 4, 1, 3, 4, 5, 7, 9, 9, 9, 9, 9, 9],
+        [3, 4, 1, 3, 4, 5, 7, 9, 9, 9, 9, 9, 9],
+        [4, 5, 5, 1, 3, 4, 6, 8, 9, 9, 9, 9, 9],
+        [6, 6, 6, 5, 2, 4, 5, 7, 9, 9, 9, 9, 9],
+        [8, 8, 8, 7, 7, 3, 4, 5, 8, 9, 9, 9, 9],
+        [9, 9, 9, 8, 8, 7, 4, 5, 6, 8, 9, 9, 9],
+        [9, 9, 9, 9, 9, 9, 8, 5, 5, 6, 8, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 8, 5, 6, 7, 9, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 8, 6, 6, 7, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 8, 6, 6, 7, 9],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 8, 7, 7, 8],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 7, 8],
+        [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 7]
+    ];
+    let hand = message.match[1];
+    let first = convertToIndex(hand.substr(0, 1));
+    let middle = convertToIndex(hand.substr(1, 1));
+    let suite = hand.substr(2, 1);
+
+    let result;
+    if (suite == "o") {
+        result = rank[middle][first];
+    } else {
+        result = rank[first][middle];
+    }
+    console.log(result);
+
+    let reply = commentRank(result);
+
+    bot.reply(message, reply);
+
+});
+
+function commentRank(rank) {
+    switch (rank) {
+        case 1:
+            return "ランク1:とっても強いハンドにゃ。プリフロップならレイズできるにゃ！";
+        case 2:
+            return "ランク2:かなり強いハンドにゃ。フロップ当たれば良いにゃ〜";
+        case 3:
+            return "ランク3:まぁまぁ強いハンドにゃ。どのポジションからでもオープンできるにゃ。負けちゃったらアンラッキーだにゃぁ";
+        case 4:
+            return "ランク4:十分強いハンドにゃ。どのポジションからでもオープンできるにゃ。";
+        case 5:
+            return "ランク5:なかなかのハンドにゃ。みくならミドルポジションくらいからやりたいにゃ";
+        case 6:
+            return "ランク6:普通のハンドにゃ。ミドルポジションくらいからオープンしたいにゃ。";
+        case 7:
+            return "ランク7:あんまりつよくはないにゃ。レイトポジションからスチールできたら嬉しいにゃあ";
+        case 8:
+            return "ランク8:かなり投機的なハンドにゃ。これで強いハンドをぶっ倒すにゃ！";
+        case 9:
+            return "ランク9:弱いハンドだにゃ。このハンドで参加するのはみく的にはちょっとルースかと思うにゃ。";
+    }
+}
+
+function convertToIndex(card) {
+    switch (card) {
+        case "A":
+            return 0;
+        case "K":
+            return 1;
+        case "Q":
+            return 2;
+        case "J":
+            return 3;
+        case "T":
+            return 4;
+        case "9":
+            return 5;
+        case "8":
+            return 6;
+        case "7":
+            return 7;
+        case "6":
+            return 8;
+        case "5":
+            return 9;
+        case "4":
+            return 10;
+        case "3":
+            return 11;
+        case "2":
+            return 12;
+    }
+}
+
 controller.hears(['what is my name', 'who am i'], 'direct_message,direct_mention,mention', function (bot, message) {
 
     controller.storage.users.get(message.user, function (err, user) {
